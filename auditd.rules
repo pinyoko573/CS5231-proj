@@ -34,6 +34,14 @@
 ## This is not very interesting and wastes a lot of space if the server is public facing
 -a always,exclude -F msgtype=CRYPTO_KEY_USER
 
+## Ignore other message log types (proctitle, sockaddr cant be excluded)
+-a exclude,never -F msgtype=CRED_DISP
+-a exclude,never -F msgtype=CRED_REFR
+-a exclude,never -F msgtype=USER_CMD
+-a exclude,never -F msgtype=USER_END
+-a exclude,never -F msgtype=USER_START
+-a exclude,never -F msgtype=USER_ACCT
+
 # Rules ---------------------------------------------------------------------
 
 ## Kernel Related Events
@@ -284,9 +292,12 @@
 # Custom configuration
 -w /home/student/secret/secret.txt -p rwa -k CUSTOM_SECRET_FILE
 
-# Log all commands (Noisy)
+# Log all execve commands
 -a exit,always -F arch=b64 -S execve -k CMD_T1059_1
 -a exit,always -F arch=b32 -S execve -k CMD_T1059_2
+
+# Include logs with message type execve
+-a always,exit -F msgtype=EXECVE
 
 # Log all system calls
 -a always.exit -S all -F auid!=-1 -F auid>=1000
