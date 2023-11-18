@@ -24,9 +24,6 @@
 ## Ignore SELinux AVC records
 -a always,exclude -F msgtype=AVC
 
-## Ignore current working directory records
--a always,exclude -F msgtype=CWD
-
 ## Ignore EOE records (End Of Event, not needed)
 -a always,exclude -F msgtype=EOE
 
@@ -34,25 +31,8 @@
 -a never,user -F subj_type=crond_t
 -a exit,never -F subj_type=crond_t
 
-## This prevents chrony from overwhelming the logs
--a never,exit -F arch=b64 -S adjtimex -F auid=unset -F uid=chrony -F subj_type=chronyd_t
-
 ## This is not very interesting and wastes a lot of space if the server is public facing
 -a always,exclude -F msgtype=CRYPTO_KEY_USER
-
-## VMWare tools (Comment out lines 75 and 76 if they are not needed)
--a exit,never -F arch=b32 -S fork -F success=0 -F path=/usr/lib/vmware-tools -F subj_type=initrc_t -F exit=-2
--a exit,never -F arch=b64 -S fork -F success=0 -F path=/usr/lib/vmware-tools -F subj_type=initrc_t -F exit=-2
-
-## CentOS
--a exit,never -F arch=b32 -S fork -F success=0 -F path=/etc/vmware-tools -F subj_type=initrc_t -F exit=-2
--a exit,never -F arch=b64 -S fork -F success=0 -F path=/etc/vmware-tools -F subj_type=initrc_t -F exit=-2
-
-### High Volume Event Filter (especially on Linux Workstations)
--a exit,never -F arch=b32 -F dir=/dev/shm -k sharedmemaccess
--a exit,never -F arch=b64 -F dir=/dev/shm -k sharedmemaccess
--a exit,never -F arch=b32 -F dir=/var/lock/lvm -k locklvm
--a exit,never -F arch=b64 -F dir=/var/lock/lvm -k locklvm
 
 # Rules ---------------------------------------------------------------------
 
@@ -117,46 +97,46 @@
 -w /usr/bin/realm -p x -k CONF_T1136.002_1
 -w /usr/sbin/realm -p x -k CONF_T1136.002_2
 
--a always,exit -F path=/usr/sbin/userdel -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_11
--a always,exit -F path=/bin/ping -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_12
--a always,exit -F path=/bin/umount -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_13
--a always,exit -F path=/bin/mount -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_14
--a always,exit -F path=/bin/su -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_15
--a always,exit -F path=/bin/chgrp -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_16
--a always,exit -F path=/bin/ping6 -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_17
--a always,exit -F path=/sbin/pam_timestamp_check -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_18
--a always,exit -F path=/usr/sbin/unix_chkpwd -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_19
--a always,exit -F path=/sbin/pwck -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_20
--a always,exit -F path=/usr/sbin/suexec -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_21
--a always,exit -F path=/usr/sbin/usermod -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_22
--a always,exit -F path=/usr/sbin/newusers -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_23
--a always,exit -F path=/usr/sbin/groupdel -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_24
--a always,exit -F path=/usr/sbin/semanage -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_25
--a always,exit -F path=/usr/sbin/usernetctl -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_26
--a always,exit -F path=/usr/sbin/ccreds_validate -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_27
--a always,exit -F path=/usr/sbin/userhelper -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_28
--a always,exit -F path=/usr/libexec/openssh/ssh-keysign -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_29
--a always,exit -F path=/usr/bin/Xorg -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_30
--a always,exit -F path=/usr/bin/rlogin -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_31
--a always,exit -F path=/usr/bin/sudoedit -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_32
--a always,exit -F path=/usr/bin/at -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_33
--a always,exit -F path=/usr/bin/rsh -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_34
--a always,exit -F path=/usr/bin/gpasswd -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_35
--a always,exit -F path=/usr/bin/kgrantpty -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_36
--a always,exit -F path=/usr/bin/crontab -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_37
--a always,exit -F path=/usr/bin/sudo -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_38
--a always,exit -F path=/usr/bin/staprun -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_39
--a always,exit -F path=/usr/bin/rcp -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_40
--a always,exit -F path=/usr/bin/passwd -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_41
--a always,exit -F path=/usr/bin/chsh -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_42
--a always,exit -F path=/usr/bin/chfn -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_43
--a always,exit -F path=/usr/bin/chage -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_44
--a always,exit -F path=/usr/bin/setfacl -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_45
--a always,exit -F path=/usr/bin/chacl -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_46
--a always,exit -F path=/usr/bin/chcon -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_47
--a always,exit -F path=/usr/bin/newgrp -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_48
--a always,exit -F path=/usr/bin/newrole -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_49
--a always,exit -F path=/usr/bin/kpac_dhcp_helper -F perm=x -F "auid>=500" -F auid!=4294967295 -k CONF_T1078.003_50
+-a always,exit -F path=/usr/sbin/userdel -F perm=x -k CONF_T1078.003_11
+-a always,exit -F path=/bin/ping -F perm=x -k CONF_T1078.003_12
+-a always,exit -F path=/bin/umount -F perm=x -k CONF_T1078.003_13
+-a always,exit -F path=/bin/mount -F perm=x -k CONF_T1078.003_14
+-a always,exit -F path=/bin/su -F perm=x -k CONF_T1078.003_15
+-a always,exit -F path=/bin/chgrp -F perm=x -k CONF_T1078.003_16
+-a always,exit -F path=/bin/ping6 -F perm=x -k CONF_T1078.003_17
+-a always,exit -F path=/sbin/pam_timestamp_check -F perm=x -k CONF_T1078.003_18
+-a always,exit -F path=/usr/sbin/unix_chkpwd -F perm=x -k CONF_T1078.003_19
+-a always,exit -F path=/sbin/pwck -F perm=x -k CONF_T1078.003_20
+-a always,exit -F path=/usr/sbin/suexec -F perm=x -k CONF_T1078.003_21
+-a always,exit -F path=/usr/sbin/usermod -F perm=x -k CONF_T1078.003_22
+-a always,exit -F path=/usr/sbin/newusers -F perm=x -k CONF_T1078.003_23
+-a always,exit -F path=/usr/sbin/groupdel -F perm=x -k CONF_T1078.003_24
+-a always,exit -F path=/usr/sbin/semanage -F perm=x -k CONF_T1078.003_25
+-a always,exit -F path=/usr/sbin/usernetctl -F perm=x -k CONF_T1078.003_26
+-a always,exit -F path=/usr/sbin/ccreds_validate -F perm=x -k CONF_T1078.003_27
+-a always,exit -F path=/usr/sbin/userhelper -F perm=x -k CONF_T1078.003_28
+#-a always,exit -F path=/usr/libexec/openssh/ssh-keysign -F perm=x -k CONF_T1078.003_29
+-a always,exit -F path=/usr/bin/Xorg -F perm=x -k CONF_T1078.003_30
+-a always,exit -F path=/usr/bin/rlogin -F perm=x -k CONF_T1078.003_31
+-a always,exit -F path=/usr/bin/sudoedit -F perm=x -k CONF_T1078.003_32
+-a always,exit -F path=/usr/bin/at -F perm=x -k CONF_T1078.003_33
+-a always,exit -F path=/usr/bin/rsh -F perm=x -k CONF_T1078.003_34
+-a always,exit -F path=/usr/bin/gpasswd -F perm=x -k CONF_T1078.003_35
+-a always,exit -F path=/usr/bin/kgrantpty -F perm=x -k CONF_T1078.003_36
+-a always,exit -F path=/usr/bin/crontab -F perm=x -k CONF_T1078.003_37
+-a always,exit -F path=/usr/bin/sudo -F perm=x -k CONF_T1078.003_38
+-a always,exit -F path=/usr/bin/staprun -F perm=x -k CONF_T1078.003_39
+-a always,exit -F path=/usr/bin/rcp -F perm=x -k CONF_T1078.003_40
+-a always,exit -F path=/usr/bin/passwd -F perm=x -k CONF_T1078.003_41
+-a always,exit -F path=/usr/bin/chsh -F perm=x -k CONF_T1078.003_42
+-a always,exit -F path=/usr/bin/chfn -F perm=x -k CONF_T1078.003_43
+-a always,exit -F path=/usr/bin/chage -F perm=x -k CONF_T1078.003_44
+-a always,exit -F path=/usr/bin/setfacl -F perm=x -k CONF_T1078.003_45
+-a always,exit -F path=/usr/bin/chacl -F perm=x -k CONF_T1078.003_46
+-a always,exit -F path=/usr/bin/chcon -F perm=x -k CONF_T1078.003_47
+-a always,exit -F path=/usr/bin/newgrp -F perm=x -k CONF_T1078.003_48
+-a always,exit -F path=/usr/bin/newrole -F perm=x -k CONF_T1078.003_49
+-a always,exit -F path=/usr/bin/kpac_dhcp_helper -F perm=x -k CONF_T1078.003_50
 
 ## Pam Related Events
 -w /etc/pam.d/ -p wa -k CONFFILE_T1071
@@ -171,33 +151,33 @@
 -w /usr/bin/sudo -p x -k CONF_T1548.003_2
 -w /etc/sudoers -p rw -k CONFFILE_T1548.003_3
 -a always,exit -S setresuid -F a0=0 -F exe=/usr/bin/sudo -k CONF_T1548.003_4
--a always,exit -F dir=/home -F uid=0 -F auid>=1000 -F auid!=4294967295 -C auid!=obj_uid -k CONF_T1548.003_5
--a always,exit -F arch=b32 -S chmod -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_1
--a always,exit -F arch=b32 -S chown -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_2
--a always,exit -F arch=b32 -S fchmod -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_3
--a always,exit -F arch=b32 -S fchmodat -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_4
--a always,exit -F arch=b32 -S fchown -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_5
--a always,exit -F arch=b32 -S fchownat -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_6
--a always,exit -F arch=b32 -S fremovexattr -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_7
--a always,exit -F arch=b32 -S fsetxattr -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_8
--a always,exit -F arch=b32 -S lchown -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_9
--a always,exit -F arch=b32 -S lremovexattr -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_10
--a always,exit -F arch=b32 -S lsetxattr -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_11
--a always,exit -F arch=b32 -S removexattr -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_12
--a always,exit -F arch=b32 -S setxattr -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_13
--a always,exit -F arch=b64 -S chmod  -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_14
--a always,exit -F arch=b64 -S chown -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_15
--a always,exit -F arch=b64 -S fchmod -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_16
--a always,exit -F arch=b64 -S fchmodat -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_17
--a always,exit -F arch=b64 -S fchown -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_18
--a always,exit -F arch=b64 -S fchownat -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_19
--a always,exit -F arch=b64 -S fremovexattr -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_20
--a always,exit -F arch=b64 -S fsetxattr -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_21
--a always,exit -F arch=b64 -S lchown -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_22
--a always,exit -F arch=b64 -S lremovexattr -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_23
--a always,exit -F arch=b64 -S lsetxattr -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_24
--a always,exit -F arch=b64 -S removexattr -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_25
--a always,exit -F arch=b64 -S setxattr -F "auid>=500" -F auid!=4294967295 -k CONF_T1548.001_26
+-a always,exit -F dir=/home -F uid=0 -C auid!=obj_uid -k CONF_T1548.003_5
+-a always,exit -F arch=b32 -S chmod -k CONF_T1548.001_1
+-a always,exit -F arch=b32 -S chown -k CONF_T1548.001_2
+-a always,exit -F arch=b32 -S fchmod -k CONF_T1548.001_3
+-a always,exit -F arch=b32 -S fchmodat -k CONF_T1548.001_4
+-a always,exit -F arch=b32 -S fchown -k CONF_T1548.001_5
+-a always,exit -F arch=b32 -S fchownat -k CONF_T1548.001_6
+-a always,exit -F arch=b32 -S fremovexattr -k CONF_T1548.001_7
+-a always,exit -F arch=b32 -S fsetxattr -k CONF_T1548.001_8
+-a always,exit -F arch=b32 -S lchown -k CONF_T1548.001_9
+-a always,exit -F arch=b32 -S lremovexattr -k CONF_T1548.001_10
+-a always,exit -F arch=b32 -S lsetxattr -k CONF_T1548.001_11
+-a always,exit -F arch=b32 -S removexattr -k CONF_T1548.001_12
+-a always,exit -F arch=b32 -S setxattr -k CONF_T1548.001_13
+-a always,exit -F arch=b64 -S chmod  -k CONF_T1548.001_14
+-a always,exit -F arch=b64 -S chown -k CONF_T1548.001_15
+-a always,exit -F arch=b64 -S fchmod -k CONF_T1548.001_16
+-a always,exit -F arch=b64 -S fchmodat -k CONF_T1548.001_17
+-a always,exit -F arch=b64 -S fchown -k CONF_T1548.001_18
+-a always,exit -F arch=b64 -S fchownat -k CONF_T1548.001_19
+-a always,exit -F arch=b64 -S fremovexattr -k CONF_T1548.001_20
+-a always,exit -F arch=b64 -S fsetxattr -k CONF_T1548.001_21
+-a always,exit -F arch=b64 -S lchown -k CONF_T1548.001_22
+-a always,exit -F arch=b64 -S lremovexattr -k CONF_T1548.001_23
+-a always,exit -F arch=b64 -S lsetxattr -k CONF_T1548.001_24
+-a always,exit -F arch=b64 -S removexattr -k CONF_T1548.001_25
+-a always,exit -F arch=b64 -S setxattr -k CONF_T1548.001_26
 -a always,exit -F arch=b64 -S setuid -S setgid -S setreuid -S setregid -k CONF_T1548.001_29
 -a always,exit -F arch=b32 -S setuid -S setgid -S setreuid -S setregid -k CONF_T1548.001_30
 -a always,exit -F arch=b64 -S setuid -S setgid -S setreuid -S setregid -F exit=EPERM -k CONF_T1548.001_31
@@ -274,7 +254,8 @@
 -w /usr/bin/LogMein -p x -k TOOL_T1219_12
 
 ## Pre-OS Boot
--w /boot/grub2/grub.cfg -p wa -k CONFFILE_T1542.003_1
+-w /boot/grub/grub.cfg -p wa -k CONFFILE_T1542.003_1
+#-w /boot/grub2/grub.cfg -p wa -k CONFFILE_T1542.003_1
 
 # DPKG / APT-GET (Debian/Ubuntu)
 -w /usr/bin/dpkg -p x -k TOOL_T1072_7
@@ -300,12 +281,12 @@
 -w /usr/bin/ftp -p x -k TOOL_T1105
 -w /usr/bin/scp -p x -k TOOL
 
+# Custom configuration
+-w /home/student/secret/secret.txt -p rwa -k CUSTOM_SECRET_FILE
+
 # Log all commands (Noisy)
 -a exit,always -F arch=b64 -S execve -k CMD_T1059_1
 -a exit,always -F arch=b32 -S execve -k CMD_T1059_2
 
 # Log all system calls
--a exit,always -S all -F auid!=-1 -F auid>=1000
-
-# Custom configuration
--w /home/student/secret/secret.txt -p rwa -k CUSTOM_SECRET_FILE
+-a always.exit -S all -F auid!=-1 -F auid>=1000
