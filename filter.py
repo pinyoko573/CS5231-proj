@@ -3,6 +3,10 @@ import re
 import traceback
  
 filtered_log_dict = {}
+processid_to_auditids_dict = {}
+interested_process_ids = [] # Might have duplicates
+ 
+##### FUNCTIONS CALLS FOR PROCESSING LOGS INTO DATA STRUCTURES #####
  
 def process_log(log):
     if log.startswith("type=SYSCALL"):
@@ -43,6 +47,9 @@ def convertLogContentToDict(log_content):
     log_content_dict = {}
     for pair in pairs_list:
         key, value = pair.split('=', 1)
+        # Remove wrapping quotation marks
+        if value[0] == '"' and value[-1] == '"':
+            value = value[1:-1]
         log_content_dict[key] = value
  
     return log_content_dict
@@ -66,6 +73,18 @@ def handleSyscall(log):
  
     # Add the log content as a value to the main dictionary
     filtered_log_dict[audit_id] = log_content_dict
+ 
+    # Add the audit_id to processid_to_auditids_dict
+    process_id = log_content_dict["pid"]
+    if process_id in processid_to_auditids_dict:
+        processid_to_auditids_dict[process_id].append(audit_id)
+    else:
+        processid_to_auditids_dict[process_id] = [audit_id]
+ 
+    # NOTE: To add other interested processes below (those that we want to build provenance graph for)
+    # Check if syscall is the interested syscall (access to secret.txt)
+    if log_content_dict["key"] == "CUSTOM_SECRET_FILE":
+        interested_process_ids.append(process_id)
  
 # PATH logs only appear if the syscall has items!=0
 # It represents the information of the file path referred by syscall args
@@ -99,6 +118,32 @@ def handleExecve(log):
         # AFAIK, this cannot happen. EXECVE always come after SYSCALL, so entry must exists
         raise ValueError("EXECVE log exists without SYSCALL log. Log: " + log)
  
+##### FUNCTIONS CALLS FOR PRINTING INFORMATION FROM DATA STRUCTURE #####
+def printSeparator():
+    print("======================================================")
+ 
+def printSmallSeparator():
+    print("**********")
+ 
+def printBeautifiedLog(audit_id):
+    print("Hi")
+ 
+def printAllLogs(process_id):
+    count = 1
+    for audit_id in processid_to_auditids_dict[process_id]:
+        printSmallSeparator()
+        print("[Syscall " + str(count) + "]")
+        printBeautifiedLog(audit_id)
+        count += 1
+    printSmallSeparator()
+ 
+def printInterestedProcessesInfo():
+    for process_id in interested_process_ids:
+        printSeparator()
+        print("Process ID: " + process_id)
+        printAllLogs(process_id)
+    printSeparator()
+ 
 def main():
     # Check if the file path is provided as a command-line argument
     if len(sys.argv) != 2:
@@ -114,7 +159,18 @@ def main():
             # Read each line and process it
             for line_number, log in enumerate(log_file, start=1):
                 process_log(log)
-        print(filtered_log_dict)
+ 
+        #### UNCOMMENT THE BELOW 3 prints() TO VIEW THE DATA STRUCTURE ####
+        # print(filtered_log_dict)
+        # print(processid_to_auditids_dict)
+        # print(interested_process_ids)
+ 
+        # At this point, the log has been added into data structure
+        # And we know all the audit_ids called by a process_id
+        # And we have a list of the interested process_ids
+ 
+        # To print the syscalls information called by our interested process
+        printInterestedProcessesInfo()
  
     except FileNotFoundError:
         print(f"File not found: {file_path}")
