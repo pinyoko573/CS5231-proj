@@ -1,10 +1,13 @@
 import sys
 import re
 import traceback
+from datetime import datetime
+import syscall_dictionary #syscall_dictionary.py
  
 filtered_log_dict = {}
 processid_to_auditids_dict = {}
 interested_process_ids = [] # Might have duplicates
+syscall_dict = syscall_dictionary.syscall_dict
  
 ##### FUNCTIONS CALLS FOR PROCESSING LOGS INTO DATA STRUCTURES #####
  
@@ -125,8 +128,44 @@ def printSeparator():
 def printSmallSeparator():
     print("**********")
  
+def getReadableTime(timestamp_string):
+    # Split the timestamp and microseconds
+    timestamp, microseconds = map(float, timestamp_string.split(':'))
+ 
+    # Convert seconds to datetime
+    dt_object = datetime.utcfromtimestamp(timestamp)
+ 
+    return str(dt_object)
+ 
+ 
 def printBeautifiedLog(audit_id):
-    print("Hi")
+    log_dict = filtered_log_dict[audit_id]
+    print("Involved syscall: %s" % syscall_dict[int(log_dict['syscall'])])
+    print("Time: %s" % getReadableTime(audit_id))
+    print("Executable: %s" % log_dict['exe'])
+ 
+    # To print syscall arguments
+    count = 0
+    arguments = ""
+    while 'a'+str(count) in log_dict:
+         arguments += log_dict['a'+str(count)] + ", "
+         count += 1
+    if count != 0: 
+        print("Arguments: %s" % arguments[:-2])
+ 
+    # To print paths if exists
+    argument_paths = ""
+    paths_count = int(log_dict['items'])
+    for i in range(paths_count):
+        argument_paths += log_dict['path'+str(i)] + ", "
+    if paths_count != 0:
+        print("File paths in arguments: %s" % argument_paths[:-2])
+ 
+    # To print execve string if exists
+    if 'execve' in log_dict: 
+        print("Execve command: %s" % log_dict['execve'])
+ 
+    print("Audit ID: %s" % audit_id)
  
 def printAllLogs(process_id):
     count = 1
