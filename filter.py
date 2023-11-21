@@ -208,7 +208,7 @@ def makeCsvFile(file_path, header, data):
 
 def getSyscallCsvFile():
     for log_key, log_value in filtered_log_dict.items(): 
-        log_id = log_key
+        log_id = log_key.split(':')[1]
         pid = log_value['pid']
         syscall = syscall_dict[int(log_value['syscall'])]
         key = log_value['key']
@@ -225,16 +225,18 @@ def getPathCsvFile():
     
 def getPidCsvFile():
     for pid, ppid in pid_dict.items():
-        process_name = ""
+        path = ""
+        name = ""
         for audit_id in processid_to_auditids_dict[pid]:
             log_dict = filtered_log_dict[audit_id]
             if log_dict['syscall'] == "59":
-                process_name = log_dict['exe']
+                path = log_dict['exe']
+                name = log_dict['comm']
                 break
-        pid_data.append({"pid":pid, "ppid":ppid, "name":process_name})
+        pid_data.append({"pid":pid, "ppid":ppid, "name":name, "path":path})
     
     csv_file_path = "pid.csv"
-    header = ["pid", "ppid", "name"]
+    header = ["pid", "ppid", "name", "path"]
     makeCsvFile(csv_file_path, header, pid_data)
 
 def getCsvFiles():
