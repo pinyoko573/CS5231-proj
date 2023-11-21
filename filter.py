@@ -109,7 +109,7 @@ def handlePath(log):
 
     if audit_id in filtered_log_dict:
         filtered_log_dict[audit_id].update({ "path"+log_content_dict["item"] : log_content_dict["name"] })
-        path_data.append({"log_id":audit_id, "filepath":log_content_dict["name"]})
+        path_data.append({"log_id":audit_id.split(':')[1], "filepath":log_content_dict["name"]})
     else:
         # AFAIK, this cannot happen. PATH always come after SYSCALL, so entry must exists
         raise ValueError("PATH log exists without SYSCALL log. Log: " + log)
