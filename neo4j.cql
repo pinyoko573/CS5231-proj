@@ -21,6 +21,7 @@ WITH p
 MATCH (s:Syscall {log_id : p.log_id})
 CREATE (s)-[:ACCESS]->(p);
 
+// ------------------------------------------------------------------
 // Cypher query
 // Show all child nodes from the name of the parent node
 MATCH p=(pid:Pid {name:"run-attack.sh"})-[*]->(c)
