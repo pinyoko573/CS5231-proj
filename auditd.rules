@@ -1,4 +1,5 @@
 # Referenced from https://github.com/bfuzzy1/auditd-attack/blob/master/auditd-attack/auditd-attack.rules
+# Each rule (except for user-defined) is tagged to a key which contains the type of rule, followed by MITRE Technique ID 
 # Filters are categorized into 5 types:
 # CONF - Sensitive configuration programs (e.g. setuid)
 # CONFFILE - Sensitive configuration files (e.g. passwd)
@@ -287,7 +288,7 @@
 
 # Remote File Copy
 -w /usr/bin/ftp -p x -k TOOL_T1105
--w /usr/bin/scp -p x -k TOOL
+-w /usr/bin/scp -p x -k TOOL_T1105
 
 # Custom configuration
 -w /home/student/secret/secret.txt -p rwa -k CUSTOM_SECRET_FILE
@@ -299,5 +300,5 @@
 # Include logs with message type execve
 -a always,exit -F msgtype=EXECVE
 
-# Log all system calls
--a always.exit -S all -F auid!=-1 -F auid>=1000
+# Log all system calls (noisy)
+# -a always.exit -S all -F auid!=-1 -F auid>=1000
