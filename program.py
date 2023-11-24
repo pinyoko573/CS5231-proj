@@ -40,7 +40,7 @@ def stopAudit():
     subprocess.call(["sudo", "mv", "/etc/audit/rules.d/audit_old.rules", "/etc/audit/rules.d/audit.rules"])
 
     # Converting logs into csv
-    print('Convertings logs to csv data...')
+    print('Converting logs to csv data...')
     convertLog("/var/log/audit/audit.log")
 
     # Inserting csv into neo4j database
