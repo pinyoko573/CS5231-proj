@@ -244,14 +244,14 @@ def getCsvFiles():
     getPathCsvFile()
     getPidCsvFile()
 
-def main():
+def convertLog(file_path):
     # Check if the file path is provided as a command-line argument
-    if len(sys.argv) != 2:
-        print("Usage: python3 file_processor.py <file_path>")
-        return
+    # if len(sys.argv) != 2:
+    #     print("Usage: python3 file_processor.py <file_path>")
+    #     return
 
     # Extract the file path from the command-line argument
-    file_path = sys.argv[1]
+    # file_path = sys.argv[1]
 
     try:
         # Open the file in read mode
@@ -279,5 +279,5 @@ def main():
         print(f"An error occurred: {e}")
         traceback.print_exc()
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     convertLog()
