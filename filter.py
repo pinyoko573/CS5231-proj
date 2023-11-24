@@ -213,7 +213,7 @@ def getSyscallCsvFile():
         syscall = syscall_dict[int(log_value['syscall'])]
         key = log_value['key']
         arguments = getArguments(log_value)
-        if log_value['syscall'] == '59':
+        if log_value['syscall'] == '59' and log_value['success'] == 'yes':
             arguments = log_value['execve']
         syscall_data.append({"log_id":log_id, "pid":pid, "syscall":syscall, "key":key, "arguments":arguments})
     csv_file_path = "syscall.csv"

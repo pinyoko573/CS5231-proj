@@ -29,7 +29,7 @@ def startAudit(program_path):
     # Execute the program given
     p = subprocess.Popen([program_path], shell=True)
     print('Sample program is now running!')
-    print('Either wait for the program to end, or press Ctrl+C to terminate')
+    print('To terminate, press Ctrl+C.')
     
     return p
 
@@ -75,7 +75,12 @@ def main():
 
     # Wait for the program to execute finish
     ret_value = program.wait()
-    print(f'Sample program exited with code {ret_value}')
+    print(f'Sample program exited with code {ret_value}.')
+
+    print(f'Audit is still running. To stop, type stop')
+    while True:
+        if input() == 'stop':
+            break
 
     # Stop audit
     stopAudit()
