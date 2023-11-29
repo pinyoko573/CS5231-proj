@@ -273,6 +273,14 @@
 -w /usr/bin/aptitude -p x -k TOOL_T1072_10
 
 ## Code injection Related Events
+-a always,exit -F arch=b32 -S ptrace -k T1055.008_1
+-a always,exit -F arch=b64 -S ptrace -k T1055.008_2
+-a always,exit -F arch=b32 -S ptrace -F a0=0x4 -k T1055.008_3
+-a always,exit -F arch=b64 -S ptrace -F a0=0x4 -k T1055.008_4
+-a always,exit -F arch=b32 -S ptrace -F a0=0x5 -k T1055.008_5
+-a always,exit -F arch=b64 -S ptrace -F a0=0x5 -k T1055.008_6
+-a always,exit -F arch=b32 -S ptrace -F a0=0x6 -k T1055.008_7
+-a always,exit -F arch=b64 -S ptrace -F a0=0x6 -k T1055.008_8
 -w /etc/ld.so.preload -k CONFFILE_T1548.001_33
 
 ## Shell configuration Persistence Related Events
