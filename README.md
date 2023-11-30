@@ -1,6 +1,6 @@
 # System Call Provenance Analysis
 
-![program](https://github.com/pinyoko573/CS5231-proj/assets/87714995/f6a6d149-a539-42e7-a59c-3f0e7f96fc4c)
+![program](https://github.com/pinyoko573/CS5231-proj/assets/87714995/f6a6d149-a539-42e7-a59c-3f0e7f96fc4c)<br>
 ![neo4j](https://github.com/pinyoko573/CS5231-proj/assets/87714995/390351f2-be06-45b4-8e46-b028339b8a2d)
 
 A tool that audits system calls made from a program using **auditd** and visualize the data into a provenance graph with **Neo4j**.<br>
@@ -42,6 +42,8 @@ MATCH p=(pid:Pid {name:<name of sample that was returned in the program>})-[*]->
 RETURN p
 ```
 3. To visualise the nodes better, change the nodes into different colors.
+
+
 | Node | Filter key | Size & Color |
 | --- | --- | ----------- |
 | Process (PID) | - | 4x Yellow Circle |
